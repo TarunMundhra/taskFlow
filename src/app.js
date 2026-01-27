@@ -11,7 +11,7 @@ const app = express()
 
 app.use(cors(
     {
-        origin : process.env.CORS_ORIGIN,
+        origin : true,
         credentials : true
     }
 ))
@@ -21,21 +21,25 @@ app.use( express.json( {
 }))
 
 app.use(express.urlencoded({ extended : true , limit : "16kb"}))
+
 app.use(express.static("public"))
 app.use(cookieParser())
 
 // import routes
 
-import userRoutes from "./routes/user.route.js"
+// import userRoutes from "./routes/user.route.js"
+import taskRoutes from "./routes/task.route.js"
+import dependencyRoutes from "./routes/dependency.route.js"
 
 // routes 
-app.use("/api/v1/users" , userRoutes)
+// app.use("/api/v1/users" , userRoutes)
+app.use("/api/v1/tasks" , taskRoutes)
+app.use("/api/v1/dependencies" , dependencyRoutes)
 
-app.use( ( req, res, next) =>{
-    const error = new Error(`
-    Not Found - ${req.originalUrl}`)
-    res.status(404)
-    next(error)
-})
+app.use((req, res) => {
+  res.status(404).json({ error: "Route not found" });
+});
+
+
  
 export {app}
